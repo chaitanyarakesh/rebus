@@ -48,53 +48,101 @@ RapidApp.controller('UsersCtrl', function ($scope, $location, $stateParams,UserD
         jobj.id = id;
         Dataobj.push(jobj);
         StartPageLoader();
-        $.ajax({
-            url: "/GetUserData",
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(Dataobj),
-            success: function (response) {
-                if (response.isauthenticated == false) {
-                    StopPageLoader();
 
-                    //fn_session_expired_client();
 
-                }
-                else if (response.error) {
-                    fn_errorNotification("200", response.error, response.error, "error occured at getting data with code fn_save_details_003", "error_alert", "", "");
-                    StopPageLoader();
-                }
-                else {
-                    $("#txt_EmpId").val(response[0]["EmployeeId"]);
-                    $("#txt_firstname").val(response[0]["Firstname"]);
-                    $("#txt_lastname").val(response[0]["Lastname"]);
-                    $("#txt_EmailId").val(response[0]["EmailId"]);
-                    $("#txt_countrycode").val(response[0]["Countrycode"]);
-                    $("#txt_Mobilenumber").val(response[0]["Mobilenumber"]);
 
-                    $("#idUserlabel").val(response[0]["Id"]);
-                    if (response[0]["chk_active"] == true || response[0]["chk_active"] == "true") {
-                        $("#chk_active").attr('checked', 'checked');
-                    }
-                    else {
-                        $("#chk_active").prop('');
-                    }
+        UserDetails.getuserdata(JSON.stringify(Dataobj)).then(function(response){
+            if (response.isauthenticated == false) {
+                            StopPageLoader();
+        
+                            //fn_session_expired_client();
+        
+                        }
+                        else if (response.error) {
+                            fn_errorNotification("200", response.error, response.error, "error occured at getting data with code fn_save_details_003", "error_alert", "", "");
+                            StopPageLoader();
+                        }
+                        else {
+                            $("#txt_EmpId").val(response[0]["EmployeeId"]);
+                            $("#txt_firstname").val(response[0]["Firstname"]);
+                            $("#txt_lastname").val(response[0]["Lastname"]);
+                            $("#txt_EmailId").val(response[0]["EmailId"]);
+                            $("#txt_countrycode").val(response[0]["Countrycode"]);
+                            $("#txt_Mobilenumber").val(response[0]["Mobilenumber"]);
+        
+                            $("#idUserlabel").val(response[0]["Id"]);
+                            if (response[0]["chk_active"] == true || response[0]["chk_active"] == "true") {
+                                $("#chk_active").attr('checked', 'checked');
+                            }
+                            else {
+                                $("#chk_active").prop('');
+                            }
+        
+                            setTimeout(function () {
+                                $("#txt_Role").val(response[0]["Role"]);
+                                $("#txt_Role").trigger("chosen:updated");
+                                $("#txt_passwordPolicy").val(response[0]["PasswordPolicy"]);
+                                $("#txt_passwordPolicy").trigger("chosen:updated");
+                            }, 100);
+                            //$("#txt_passwordPolicy").val(response[0]["PasswordPolicy"]).trigger("chosen:updated");
+                            StopPageLoader();
+                        
 
-                    setTimeout(function () {
-                        $("#txt_Role").val(response[0]["Role"]);
-                        $("#txt_Role").trigger("chosen:updated");
-                        $("#txt_passwordPolicy").val(response[0]["PasswordPolicy"]);
-                        $("#txt_passwordPolicy").trigger("chosen:updated");
-                    }, 100);
-                    //$("#txt_passwordPolicy").val(response[0]["PasswordPolicy"]).trigger("chosen:updated");
-                    StopPageLoader();
-                }
-            },
-            error: function (jqXHR, exception) {
-                fn_errorNotification(jqXHR.status, jqXHR, exception, "error occured at getting data with code getupdatedata_003", "error_alert", "", "");
-                StopPageLoader();
-            }
-        });
+            
+                        }
+        })
+        .catch(function(jqHXR,exception){
+            fn_errorNotification(jqXHR.status, jqXHR, exception, "error occured at getting data with code getupdatedata_003", "error_alert", "", "");
+            StopPageLoader();
+            
+        })
+        // $.ajax({
+        //     url: "/GetUserData",
+        //     type: 'POST',
+        //     contentType: 'application/json',
+        //     data: JSON.stringify(Dataobj),
+        //     success: function (response) {
+        //         if (response.isauthenticated == false) {
+        //             StopPageLoader();
+
+        //             //fn_session_expired_client();
+
+        //         }
+        //         else if (response.error) {
+        //             fn_errorNotification("200", response.error, response.error, "error occured at getting data with code fn_save_details_003", "error_alert", "", "");
+        //             StopPageLoader();
+        //         }
+        //         else {
+        //             $("#txt_EmpId").val(response[0]["EmployeeId"]);
+        //             $("#txt_firstname").val(response[0]["Firstname"]);
+        //             $("#txt_lastname").val(response[0]["Lastname"]);
+        //             $("#txt_EmailId").val(response[0]["EmailId"]);
+        //             $("#txt_countrycode").val(response[0]["Countrycode"]);
+        //             $("#txt_Mobilenumber").val(response[0]["Mobilenumber"]);
+
+        //             $("#idUserlabel").val(response[0]["Id"]);
+        //             if (response[0]["chk_active"] == true || response[0]["chk_active"] == "true") {
+        //                 $("#chk_active").attr('checked', 'checked');
+        //             }
+        //             else {
+        //                 $("#chk_active").prop('');
+        //             }
+
+        //             setTimeout(function () {
+        //                 $("#txt_Role").val(response[0]["Role"]);
+        //                 $("#txt_Role").trigger("chosen:updated");
+        //                 $("#txt_passwordPolicy").val(response[0]["PasswordPolicy"]);
+        //                 $("#txt_passwordPolicy").trigger("chosen:updated");
+        //             }, 100);
+        //             //$("#txt_passwordPolicy").val(response[0]["PasswordPolicy"]).trigger("chosen:updated");
+        //             StopPageLoader();
+        //         }
+        //     },
+        //     error: function (jqXHR, exception) {
+        //         fn_errorNotification(jqXHR.status, jqXHR, exception, "error occured at getting data with code getupdatedata_003", "error_alert", "", "");
+        //         StopPageLoader();
+        //     }
+        // });
     }
 	
 	$scope.fn_save_Userdetails = function(){
@@ -179,46 +227,73 @@ RapidApp.controller('UsersCtrl', function ($scope, $location, $stateParams,UserD
 
             if ($("#idUserlabel").val() != "" && $("#idUserlabel").val() != null && $("#idUserlabel").val() != "undefined") {
 
+                UserDetails.updateUsesrDetails(UserDetails).then(function(responce){
+                    if (response.isauthenticated == false) {
+                                        StopPageLoader();
+            
+                                        fn_session_expired_client();
+            
+                                    }
+            
+                                    else if (response.error) {
+            
+                                        fn_errorNotification("200", response.error, response.error, "error occured at save data with code fn_save_Userdetails", "error_alert", "", "");
+                                        StopPageLoader();
+                                    }
+                                    else {
+                                        fn_SuccessNotification(response, "success_alert", "", "");
+                                        localStorage.setItem('id', '');
+                                        localStorage.setItem('type', '');
+                                        window.location.href = "#UserFormList";
+                                        StopPageLoader();
+                                    }
+
+                })
+                .catch(function(jqHXR,exception){
+                    fn_errorNotification(jqXHR.status, jqXHR, exception, "error occured at update with code fn_save_Userdetails", "error_alert", "", "");
+                                 StopPageLoader();
+
+                })
                 //StartPageLoader();
-                 alert(ErFlag)
-                $.ajax({
-                    url: "/UpdateUser",
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: UserDetails,
-                    success: function (response) {
-                        if (response.isauthenticated == false) {
-                            StopPageLoader();
+                 //alert(ErFlag)
+            //     $.ajax({
+            //         url: "/UpdateUser",
+            //         type: 'POST',
+            //         contentType: 'application/json',
+            //         data: UserDetails,
+            //         success: function (response) {
+            //             if (response.isauthenticated == false) {
+            //                 StopPageLoader();
 
-                            fn_session_expired_client();
+            //                 fn_session_expired_client();
 
-                        }
+            //             }
 
-                        else if (response.error) {
+            //             else if (response.error) {
 
-                            fn_errorNotification("200", response.error, response.error, "error occured at save data with code fn_save_Userdetails", "error_alert", "", "");
-                            StopPageLoader();
-                        }
-                        else {
-                            fn_SuccessNotification(response, "success_alert", "", "");
-                            localStorage.setItem('id', '');
-                            localStorage.setItem('type', '');
-                            window.location.href = "#UserFormList";
-                            StopPageLoader();
-                        }
-                    },
-                    error: function (jqXHR, exception) {
-                        fn_errorNotification(jqXHR.status, jqXHR, exception, "error occured at update with code fn_save_Userdetails", "error_alert", "", "");
-                        StopPageLoader();
-                    }
-                });
-            }
+            //                 fn_errorNotification("200", response.error, response.error, "error occured at save data with code fn_save_Userdetails", "error_alert", "", "");
+            //                 StopPageLoader();
+            //             }
+            //             else {
+            //                 fn_SuccessNotification(response, "success_alert", "", "");
+            //                 localStorage.setItem('id', '');
+            //                 localStorage.setItem('type', '');
+            //                 window.location.href = "#UserFormList";
+            //                 StopPageLoader();
+            //             }
+            //         },
+            //         error: function (jqXHR, exception) {
+            //             fn_errorNotification(jqXHR.status, jqXHR, exception, "error occured at update with code fn_save_Userdetails", "error_alert", "", "");
+            //             StopPageLoader();
+            //         }
+            //     });
+             }
 
 
             else {
 
                 StartPageLoader();
-				UserDetails.saveUserDetails().then(function(response){
+				UserDetails.saveUserDetails(UserDetails).then(function(response){
 					if (response.isauthenticated == false) {
                             StopPageLoader();
 
